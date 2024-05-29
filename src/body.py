@@ -35,7 +35,7 @@ def preprocess_body_dataframe(body_dataframe: pd.DataFrame) -> pd.DataFrame:
         body_dataframe[label] = pd.to_numeric(body_dataframe[label], errors='coerce')
     return body_dataframe
 
-def plot_body_weight(figsize=(30,15)):
+def plot_body_weight(figsize=(10,7)):
     df = preprocess_body_dataframe(load_spreadsheet())
     sns.set_theme(style='darkgrid')
     fig, ax = plt.subplots(figsize=figsize)
