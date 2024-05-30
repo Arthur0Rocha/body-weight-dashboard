@@ -22,11 +22,14 @@ def load_spreadsheet(filename='sheets_key.json', spreadsheet_name='Body Measures
 def preprocess_body_dataframe(body_dataframe: pd.DataFrame) -> pd.DataFrame:
     body_dataframe['date'] = pd.to_datetime(body_dataframe[''], errors='coerce')
     body_dataframe = body_dataframe[body_dataframe.date.notna()]
-    body_dataframe['weight'] = body_dataframe['Weight (kg)']
-    body_dataframe['exercising'] = body_dataframe['Exercising (scale)']
-    body_dataframe['diet'] = body_dataframe['Diet quality ']
-    body_dataframe['protein'] = body_dataframe['Protein intake (g)']
-    body_dataframe['kcal'] = body_dataframe['Daily cal (kcal)']
+    rename = {
+        'Weight (kg)': 'weight',
+        'Exercising (scale)': 'exercising',
+        'Diet quality ': 'diet',
+        'Protein intake (g)': 'protein',
+        'Daily cal (kcal)': 'kcal',
+    }
+    body_dataframe.rename(columns=rename, inplace=True)
     body_dataframe = body_dataframe[['date', 'weight', 'exercising', 'diet','protein', 'kcal']]
     for label in ['weight', 'exercising', 'diet', 'protein', 'kcal']:
         body_dataframe[label] = pd.to_numeric(body_dataframe[label], errors='coerce')
