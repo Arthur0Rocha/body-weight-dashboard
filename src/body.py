@@ -1,7 +1,5 @@
-#import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt 
-from pandas.io.xml import preprocess_data
 import seaborn as sns
 
 import gspread
@@ -34,8 +32,20 @@ def preprocess_body_dataframe(body_dataframe: pd.DataFrame) -> pd.DataFrame:
         body_dataframe[label] = pd.to_numeric(body_dataframe[label], errors='coerce')
     return body_dataframe
 
-def plot_body_weight(figsize=(20,15)):
-    df = preprocess_data(load_spreadsheet())
-    fig, ax = plt.figure(figsize=figsize)
+def plot_body_weight(figsize=(30,15)):
+    df = preprocess_body_dataframe(load_spreadsheet())
+    sns.set_theme(style='darkgrid')
+    fig, ax = plt.subplots(figsize=figsize)
+
     sns.lineplot(data=df, x='date', y='weight', color=[.2,.8,1], ax=ax)
+    sns.lineplot(x=df.date, y=df.weight.rolling(7).mean(), color=[1,0,0], ax=ax)
+    sns.lineplot(x=df.date, y=df.weight.rolling(21).mean(), color=[0,1,0], ax=ax)
+
+    plt.axvline(x=pd.to_datetime('2024-03-20'), color=[.9,.7,.3], linestyle='--') # Mudança p/ Santos
+    plt.axvline(x=pd.to_datetime('2023-09-10'), color=[.9,.7,.3], linestyle='--') # Nascimento Xande
+    plt.axvline(x=pd.to_datetime('2022-12-15'), color=[.9,.7,.3], linestyle='--') # Viagem Europa
+
+    plt.axvline(x=pd.to_datetime('2023-01-01'), color=[1,0,0], linestyle='--')
+    plt.axvline(x=pd.to_datetime('2024-01-01'), color=[1,0,0], linestyle='--')
+
     return fig
